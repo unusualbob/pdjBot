@@ -108,6 +108,18 @@ phantom.create(function(ph) {
                 
               });
               
+              API.addEventListener(API.DJ_ADVANCE, function(djs) {
+                if ($('#button-vote-positive').length != 0) {
+                  setTimeout(function(){
+                    $('#button-vote-positive').click();
+                  },761);
+                } else {
+                  console.log("couldn't find upvote");
+                }
+                
+              });
+              
+              
               
               /**COMMANDS**/
               function command(data) {
@@ -117,26 +129,32 @@ phantom.create(function(ph) {
                 
                 switch (tokens[0])
                 {
-                  case 'leave':
-                  case 'quit':
-                    if (admin(data.fromID)){
-                      console.log("oh i should quit? Nah");
-                    } else{
-                      API.sendChat('Why do you want me to go? :(');
-                    }
+                  case 'about':
+                  case 'commands':
+                    API.sendChat("http://github.com/unusualbob/pdjBot");
                     break;
-                  case 'awesome':
-                    if (admin(data.fromID)){
-                      API.sendChat('I cant do that yet :/');
-                    }
-                    break;
-                  case 'rules':
-                  case 'help':
-                    //API.sendChat("There are rules?");
-                    break;
-                  case 'id':
+                  case 'idle':
                   case 'djs':
                     getIdleDjs();
+                    break;
+                  case 'bitch':
+                    API.sendChat('Not a lot of things are against the rules, but bitching about the music is. Stop being a bitch.');
+                    break;
+                  case 'rules':
+                    API.sendChat('No song limits, no queues, no auto-dj. Pure FFA. DJ\'s over 10 minutes idle (measured by chat) face the [boot]. See /music for music suggestions, though there are no defined or enforced rules on music. More: http://goo.gl/b7UGO');
+                    break;
+                  case 'afk':
+                    API.sendChat('If you\'re afk at the end of your song for longer than 30 minutes you get warning 1. One minute later you get warning 2, another minute last warning, 30 seconds [boot].');
+                    break;
+                  case 'afpdj':
+                  case 'aftt':
+                    API.sendChat('-AFTT- AFPDJ is just as bad as AFK. DJ\'s must pay attention to chat, if you cannot do that then don\'t DJ during prime time. The purpose of these rules is so that active users who can pay attention to chat at their employer\'s expense can sit up on the decks.');
+                    break;
+                  case 'count':
+                    API.sendChat('There are ' + API.getUsers().length + ' users.');
+                    break;
+                  case 'remaeus' :
+                    API.sendChat("Hey @remæus close a few tabs so your chrome doesn't crash");
                     break;
                 }
               }
