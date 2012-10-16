@@ -1,5 +1,4 @@
 var phantom = require('phantom');
-var commands = require('./commands.js');
 var config = {
     username : '' //TWITTER USERNAME GOES HERE
   , password : '' //TWITTER PASSWORD GOES HERE
@@ -23,7 +22,7 @@ phantom.create(function(ph) {
       if ('success' === status)
       {
         //This function is a bitch, it doesn't like variables from outside AT ALL. To hack this add the variable here and at the bottom.
-        evaluate(page, function(config, commands){
+        evaluate(page, function(config){
         
           var url = window.location.href;
            
@@ -213,7 +212,7 @@ phantom.create(function(ph) {
           {
             console.log("Unknown url: " + url);
           }
-        }, config, commands);
+        }, config);
       }
       else
       {
