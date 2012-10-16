@@ -156,6 +156,9 @@ phantom.create(function(ph) {
                   case 'remaeus' :
                     API.sendChat("Hey @remæus close a few tabs so your chrome doesn't crash");
                     break;
+                  case 'music' :
+                    musicTip();
+                    break;
                 }
               }
               
@@ -185,6 +188,11 @@ phantom.create(function(ph) {
                   }
                   
                   idle = idleTime(djs[i].id);
+                  
+                  if (idle != "" && i > 0) {
+                    msg += " || ";
+                  }
+                  
                   msg += idle;
                   
                   if (i >= djs.length - 1) {
@@ -193,8 +201,6 @@ phantom.create(function(ph) {
                     } else {
                       API.sendChat("Looks like no one is idle!");
                     }
-                  } else if (idle != "") {
-                    msg += " || ";
                   }
                 }
               }
@@ -219,6 +225,21 @@ phantom.create(function(ph) {
                 return ( "@" + window.djData[id].username + " - " 
                       + minutes + ":" + seconds);
                 
+              }
+              
+              function musicTip() {
+                
+                time = new Date().getUTCHours() - 4;
+                
+                if ( 0 <= time && time < 7) {
+                  API.sendChat("Evening: Keep the tempo up, it's the only thing keeping the all nighters going.");
+                } else if ( 7 <= time && time < 10 ) {
+                  API.sendChat("AM! Chill tracks with good beats, most programmers are slow to wake so don't hit them with hard hitting tunes. Wubs are widely discouraged this early.");
+                } else if (10 <= time && time < 15 ){
+                  API.sendChat('Afternoon: Fresh tracks for fresh people.');
+                } else {
+                  API.sendChat("Evening! Most people are out of work so things are a lot more fluid and much less harsh. Seats are easy to get, spin a few if you want but don't hog the decks!");
+                }
               }
             }
           }
