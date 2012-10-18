@@ -73,6 +73,10 @@ phantom.create(function(ph) {
                 if (data.message.substr(0,1) === "/"){
                   command(data);
                 }
+                
+                if (data.message === "smiff, upvote" && data.fromID == "14028765") {
+                  API.sendChat('ok done');
+                }
 
                 console.log(" - " + data.from + " : " + data.message  + " (ID: " + data.fromID + " )");
                 
@@ -96,13 +100,45 @@ phantom.create(function(ph) {
               
               //Update djs object with any new djs
               API.addEventListener(API.DJ_UPDATE, function(djs) {
+                var changeTime = (new Date().getTime() - window.lastCheck);
+                var djIds = [];
+                
+                if (window.lastDJS) {
+                  if (djs.length > window.lastDJS.length) {
+                    console.log("someone added");
+                  } else if (djs.length < window.lastDJS.length) {
+                    console.log("someone left");
+                  }
+                }
 
                 for (var i = 0; i < djs.length; ++i) {
+                  
+                  djIds.push(djs[i].id);
+                  
                   if (typeof(window.djData[djs[i].id]) == 'undefined') {
                     window.djData[djs[i].id] = {
                         username : djs[i].username
                       , lastActive : new Date().getTime()
                     };
+                  }
+                  
+                  if (window.lastDJS) {
+                    
+                    if (window.lastDJS.indexOf(djs[i].id) == -1) {
+                      if ( changeTime < 60000) {
+                        if ( changeTime < 1500) {
+                          API.sendChat(djs[i].username + " grabbed a seat in " + changeTime + "ms!");
+                        } else {
+                          API.sendChat(djs[i].username + " grabbed a seat in " + (changeTime/1000) + "seconds.");
+                        }
+                      }
+                    }                    
+                  }
+                  
+                  if (i >= djs.length - 1) {
+                    window.lastDJS = djIds;
+                    window.lastCheck = new Date().getTime();
+                  
                   }
                 }
                 
@@ -159,6 +195,35 @@ phantom.create(function(ph) {
                   case 'music' :
                     musicTip();
                     break;
+                  case 'smiff' :
+                    if (tokens[1] == 'upvote'){
+                      if ($('#button-vote-positive').length != 0) {
+                        $('#button-vote-positive').click();
+                        API.sendChat('okay done');
+                      } else {
+                        console.log("couldn't find upvote");
+                      }
+                    }
+                    break;
+                  case 'lame' :
+                    if ($('#button-vote-negative').length != 0) {
+                      $('#button-vote-negative').click();
+                      API.sendChat('aww ok');
+                    } else {
+                      console.log("couldn't find downvote");
+                    }
+                    break;
+                  case 'awesome' :
+                    if ($('#button-vote-positive').length != 0) {
+                      $('#button-vote-positive').click();
+                      API.sendChat('okay done');
+                    } else {
+                      console.log("couldn't find upvote");
+                    }
+                    break;
+                  case 'mods' :
+                  case 'moderators' :
+                    callMods(data);
                 }
               }
               
@@ -177,9 +242,7 @@ phantom.create(function(ph) {
                 
                 var msg = "";
                 for (var i = 0; i < djs.length; ++i) {
-                  console.log('dj ' + i);
                   if (typeof(window.djData[djs[i].id]) == 'undefined') {
-                  
                     window.djData[djs[i].id] = {
                         username : djs[i].username
                       , lastActive : new Date().getTime()
@@ -189,7 +252,7 @@ phantom.create(function(ph) {
                   
                   idle = idleTime(djs[i].id);
                   
-                  if (idle != "" && i > 0) {
+                  if (idle != "" && msg != "") {
                     msg += " || ";
                   }
                   
@@ -207,7 +270,7 @@ phantom.create(function(ph) {
               
               //Calculates if a DJ is idle and returns a formatted idle string if so
               function idleTime(id) {
-                console.log("idle: " + window.djData[id] + " : " + (new Date().getTime() - window.djData[id].lastActive));
+                //console.log("idle: " + window.djData[id].username + " : " + (new Date().getTime() - window.djData[id].lastActive));
               
                 idle = Math.floor( ( new Date().getTime() - window.djData[id].lastActive) / 1000 );
                 
@@ -231,14 +294,30 @@ phantom.create(function(ph) {
                 
                 time = new Date().getUTCHours() - 4;
                 
-                if ( 0 <= time && time < 7) {
-                  API.sendChat("Evening: Keep the tempo up, it's the only thing keeping the all nighters going.");
-                } else if ( 7 <= time && time < 10 ) {
+                if ( 0 <= time && time < 5) {
+                  API.sendChat("Evening! Keep the tempo up, it's the only thing keeping the all nighters going.");
+                } else if ( 5 <= time && time < 12 ) {
                   API.sendChat("AM! Chill tracks with good beats, most programmers are slow to wake so don't hit them with hard hitting tunes. Wubs are widely discouraged this early.");
-                } else if (10 <= time && time < 15 ){
-                  API.sendChat('Afternoon: Fresh tracks for fresh people.');
+                } else if (12 <= time && time < 17 ){
+                  API.sendChat('Afternoon! Fresh tracks for fresh people.');
                 } else {
                   API.sendChat("Evening! Most people are out of work so things are a lot more fluid and much less harsh. Seats are easy to get, spin a few if you want but don't hog the decks!");
+                }
+              }
+              
+              function callMods(data) {
+                var mods = API.getModerators();
+                var msg = "";
+                for (var i = 0; i < mods.length; i++) {
+                
+                  if (msg == "")
+                    msg += "@" + mods[i].username;
+                  else
+                    msg += ", @" + mods[i].username;
+                    
+                  if (i >= mods.length - 1) {
+                    API.sendChat(msg);
+                  }
                 }
               }
             }
