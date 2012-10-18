@@ -9,6 +9,9 @@ This is definitely a work in progress and there are at least a few hacks to get 
     git clone git@github.com:unusualbob/pdjBot.git
     cd pdjBot
     npm install
+
+Now copy config.js.sample to config.js and edit its values.
+
     node bot.js
 
 #FAQ
