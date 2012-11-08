@@ -164,16 +164,18 @@ phantom.create(function(ph) {
                 
               });
               
-              API.addEventListener(API.DJ_ADVANCE, function(djs) {
-                if ($('#button-vote-positive').length != 0) {
-                  setTimeout(function(){
-                    $('#button-vote-positive').click();
-                  },761);
-                } else {
-                  console.log("couldn't find upvote");
-                }
+              //This is autovote, it was requested that I remove this so /awesome was more awesome
+              
+              // API.addEventListener(API.DJ_ADVANCE, function(djs) {
+                // if ($('#button-vote-positive').length != 0) {
+                  // setTimeout(function(){
+                    // $('#button-vote-positive').click();
+                  // },761);
+                // } else {
+                  // console.log("couldn't find upvote");
+                // }
                 
-              });
+              // });
               
               
               
