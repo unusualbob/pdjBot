@@ -82,6 +82,16 @@ phantom.create(function(ph) {
               API.addEventListener(API.CHAT, function(data){
                 if (data.message.substr(0,1) === "/"){
                   command(data);
+                } else {
+                  
+                  var tokens = data.message.split(" ");
+                  tokens.forEach(function(token) {
+                    if (token.substr(0, 1) === '!') {
+                      data.message = '/'+token.substr(1);
+                      command(data);
+                    }
+                  });
+                
                 }
                 
                 if (data.message === "smiff, upvote" && data.fromID == "14028765") {
