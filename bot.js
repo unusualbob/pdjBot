@@ -240,6 +240,13 @@ phantom.create(function(ph) {
                       console.log("couldn't find downvote");
                     }
                     break;
+                  case 'catfacts':
+                    $.getJSON('http://catfacts-api.appspot.com/api/facts', function(data) {
+                      if (data.facts && data.facts.length > 0) {
+                        API.sendChat(data.facts[0]);
+                      }
+                    });
+                  break;
                   case 'awesome' :
                     if ($('#button-vote-positive').length != 0) {
                       $('#button-vote-positive').click();
