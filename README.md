@@ -1,6 +1,6 @@
 pdjBot
 ======
-This is a bot for the plug.dj which currently runs in http://plug.dj/coding-soundtrack
+This is a bot for plug.dj which currently runs in http://plug.dj/coding-soundtrack
 
 This is definitely a work in progress and there are at least a few hacks to get it to work right.
 
