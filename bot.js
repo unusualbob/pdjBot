@@ -68,6 +68,16 @@ phantom.create(function(ph) {
               window.djData = [];
               console.log("-|-|-|-|-Bot Ready-|-|-|-|-");
               
+              Playback.streamDisabled=true;
+              Playback.stop();
+              
+              RoomUser.audience.gridData.avatarCap=1;
+              RoomUser.redraw();
+              DB.settings.avatarcap=1;
+              DB.saveSettings();
+              
+              animSpeed = 5000;
+              
               /**Event listeners**/
               API.addEventListener(API.CHAT, function(data){
                 if (data.message.substr(0,1) === "/"){
@@ -173,6 +183,10 @@ phantom.create(function(ph) {
                   case 'djs':
                     getIdleDjs();
                     break;
+                  case 'pjs':
+                    API.sendChat('Time for bed already?');
+                  case 'bjs':
+                    API.sendChat('Sorry bjs are not yet supported, and even if they were would you really want an internet bj?');
                   case 'bitch':
                     API.sendChat('Not a lot of things are against the rules, but bitching about the music is. Stop being a bitch.');
                     break;
