@@ -217,7 +217,7 @@ phantom.create(function(ph) {
                     }
                     break;
                   case 'catfacts':
-                    $.getJSON('http://catfacts-api.appspot.com/api/facts', function(data) {
+                    $.getJSON('http://www.corsproxy.com/catfacts-api.appspot.com/api/facts', function(data) {
                       if (data.facts && data.facts.length > 0) {
                         API.sendChat(data.facts[0]);
                       }
