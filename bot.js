@@ -180,7 +180,7 @@ phantom.create(function(ph) {
                     API.sendChat('No song limits, no queues, no auto-dj. Pure FFA. DJ\'s over 10 minutes idle (measured by chat) face the [boot]. See /music for music suggestions, though there are no defined or enforced rules on music. More: http://goo.gl/b7UGO');
                     break;
                   case 'afk':
-                    API.sendChat('If you\'re afk at the end of your song for longer than 30 minutes you get warning 1. One minute later you get warning 2, another minute last warning, 30 seconds [boot].');
+                    API.sendChat('If you\'re AFK at the end of your song for longer than 30 minutes you get warning 1. One minute later you get warning 2, another minute last warning, 30 seconds [boot].');
                     break;
                   case 'afpdj':
                   case 'aftt':
@@ -192,9 +192,15 @@ phantom.create(function(ph) {
                   case 'remaeus' :
                     API.sendChat("Hey @remæus close a few tabs so your chrome doesn't crash");
                     break;
+                  case 'nsfw':
+                    API.sendChat('Please give people who are listening at work fair warning about NSFW videos.  It\'s common courtesy for people who don\'t code from home or at an awesome startup like LocalSense!');
+                  break;
                   case 'music' :
                     musicTip();
                     break;
+                  case 'video':
+                    API.sendChat('dat video.');
+                  break;
                   case 'smiff' :
                     if (tokens[1] == 'upvote'){
                       if ($('#button-vote-positive').length != 0) {
