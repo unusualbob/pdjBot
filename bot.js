@@ -77,7 +77,7 @@ phantom.create(function(ph) {
                   var tokens = data.message.split(" ");
                   tokens.forEach(function(token) {
                     if (token.substr(0, 1) === '!') {
-                      data.message = '/'+token;
+                      data.message = '/'+token.substr(1);
                       command(data);
                     }
                   });
