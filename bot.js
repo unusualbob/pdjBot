@@ -219,6 +219,9 @@ phantom.create(function(ph) {
                       }
                     }
                     break;
+                  case 'smiffhour':
+                    API.sendChat('For the next several songs, We are going to play a selection of Will Smith songs. origin: Smiff Hour is a time honored tradition dating back to the beginning of the Coding Soundtrack. It is unknown who played the first Willard Smith.');
+                  break;
                   case 'lame' :
                     if ($('#button-vote-negative').length != 0) {
                       $('#button-vote-negative').click();
