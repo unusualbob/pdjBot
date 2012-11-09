@@ -191,6 +191,10 @@ phantom.create(function(ph) {
                   case 'commands':
                     API.sendChat("http://github.com/unusualbob/pdjBot");
                     break;
+                  case 'cb':
+                    //var djs = API.getDJs();
+                    API.sendChat('If I were a moderator, I\'d remove you at the end of this song.  I\'m not, so I can\'t, and thus won\'t.');
+                  break;
                   case 'idle':
                   case 'djs':
                     getIdleDjs();
@@ -528,3 +532,7 @@ phantom.create(function(ph) {
   });
 
 });
+
+function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
