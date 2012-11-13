@@ -190,7 +190,7 @@ phantom.create(function(ph) {
                 {
                   case 'about':
                   case 'commands':
-                    API.sendChat("http://github.com/unusualbob/pdjBot");
+                    socket.emit('chat',"http://github.com/unusualbob/pdjBot");
                     break;
                   case 'cb':
                     //var djs = API.getDJs();
@@ -208,7 +208,7 @@ phantom.create(function(ph) {
                     API.sendChat('Not a lot of things are against the rules, but bitching about the music is. Stop being a bitch.');
                     break;
                   case 'rules':
-                    API.sendChat('No song limits, no queues, no auto-dj. Pure FFA. DJ\'s over 10 minutes idle (measured by chat) face the [boot]. See /music for music suggestions, though there are no defined or enforced rules on music. More: http://goo.gl/b7UGO');
+                    socket.emit('chat','No song limits, no queues, no auto-dj. Pure FFA. DJ\'s over 10 minutes idle (measured by chat) face the [boot]. See /music for music suggestions, though there are no defined or enforced rules on music. More: http://goo.gl/b7UGO');
                     break;
                   case 'afk':
                     API.sendChat('If you\'re AFK at the end of your song for longer than 30 minutes you get warning 1. One minute later you get warning 2, another minute last warning, 30 seconds [boot].');
