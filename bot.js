@@ -259,6 +259,17 @@ phantom.create(function(ph) {
                       }
                     });
                   break;
+                  case 'smifffacts':
+                    $.getJSON('https://raw.github.com/LMCv3/pdjBot/master/smiff.json', function(data) {
+                      if (data.facts) {
+                        var len = data.facts.length;
+                        if (len > 0) {
+                          var pick = Math.floor(Math.random()*len);
+                          API.sendChat(data.facts[pick]);
+                        }
+                      }
+                    });
+                  break;
                   case 'awesome' :
                     if ($('#button-vote-positive').length != 0) {
                       $('#button-vote-positive').click();
