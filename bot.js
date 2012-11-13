@@ -1,5 +1,6 @@
 var phantom = require('phantom');
 var config = require('./config');
+var smiffJSON = require('./smiff.json');
 
 phantom.create(function(ph) {
   console.log('start');
@@ -18,7 +19,7 @@ phantom.create(function(ph) {
       if ('success' === status)
       {
         //This function is a bitch, it doesn't like variables from outside AT ALL. To hack this add the variable here and at the bottom.
-        evaluate(page, function(config){
+        evaluate(page, function(config, smiffJSON){
         
           var url = window.location.href;
            
@@ -259,22 +260,28 @@ phantom.create(function(ph) {
                       }
                     });
                   break;
+                  case 'smiffacts':
+                  case 'smiffax':
+                  case 'smifffax':
                   case 'smifffacts':
-                    console.log('smiff');
-                    $.getJSON('http://www.corsproxy.com/raw.github.com/unusualbob/pdjBot/master/smiff.json', function(data) {
-                      console.log(data);
-                      if (data.facts) {
-                        var len = data.facts.length;
-                        if (len > 0) {
-                          var pick = Math.floor(Math.random()*len);
-                          API.sendChat(data.facts[pick]);
-                        } else {
-                          console.log('no length');
-                        }
+                    if (smiffJSON.facts) {
+                      var len = smiffJSON.facts.length;
+                      if (len > 0) {
+                        var pick = Math.floor(Math.random()*len);
+                          if (smiffJSON.facts[pick].length < 251) {
+                            API.sendChat(smiffJSON.facts[pick]);
+                          } else {
+                            API.sendChat(smiffJSON.facts[pick]);
+                            setTimeout(function() {
+                              API.sendChat(smiffJSON.facts[pick].substr(250));
+                            }, 5001);
+                          }
                       } else {
-                        console.log('no facts :/');
+                        console.log('no length');
                       }
-                    });
+                    } else {
+                      console.log('no facts :/');
+                    }
                   break;
                   case 'awesome' :
                     if ($('#button-vote-positive').length != 0) {
@@ -521,7 +528,7 @@ phantom.create(function(ph) {
           {
             console.log("Unknown url: " + url);
           }
-        }, config);
+        }, config, smiffJSON);
       }
       else
       {
