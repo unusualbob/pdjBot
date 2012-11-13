@@ -260,13 +260,19 @@ phantom.create(function(ph) {
                     });
                   break;
                   case 'smifffacts':
-                    $.getJSON('https://raw.github.com/LMCv3/pdjBot/master/smiff.json', function(data) {
+                    console.log('smiff');
+                    $.getJSON('http://www.corsproxy.com/raw.github.com/unusualbob/pdjBot/master/smiff.json', function(data) {
+                      console.log(data);
                       if (data.facts) {
                         var len = data.facts.length;
                         if (len > 0) {
                           var pick = Math.floor(Math.random()*len);
                           API.sendChat(data.facts[pick]);
+                        } else {
+                          console.log('no length');
                         }
+                      } else {
+                        console.log('no facts :/');
                       }
                     });
                   break;
