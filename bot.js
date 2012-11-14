@@ -2,6 +2,13 @@ var phantom = require('phantom');
 var config = require('./config');
 var smiffJSON = require('./smiff.json');
 
+config.intervals = {
+  smiffHour: '28800' // 8 hours
+};
+
+var bootTime = new Date()
+  , timers = { smiffHour: bootTime.setHours( bootTime.getHours() - (config.intervals.smiffHour / 3600) ) };
+
 phantom.create(function(ph) {
   console.log('start');
   
@@ -184,6 +191,8 @@ phantom.create(function(ph) {
               function command(data) {
                 var cmd = data.message;
                 var tokens = cmd.substr(1, cmd.length).split(" ");
+                var now = new Date();
+                
                 console.log("Command " + tokens[0]);
                 
                 switch (tokens[0])
@@ -244,7 +253,12 @@ phantom.create(function(ph) {
                     }
                     break;
                   case 'smiffhour':
-                    API.sendChat('For the next several songs, We are going to play a selection of Will Smith songs. origin: Smiff Hour is a time honored tradition dating back to the beginning of the Coding Soundtrack. It is unknown who played the first Willard Smith.');
+                    // TODO: only allow mods to trigger smiffhour
+                    if ( (now - timers.smiffHour) > (config.intervals.smiffHour * 1000) ) {
+                      API.sendChat('Smiff Hour unlocked!  For the next several songs, we are going to play a selection of Will Smith songs. origin: Smiff Hour is a time honored tradition dating back to the beginning of the Coding Soundtrack. It is unknown who played the first Willard Smith.');
+                    } else {
+                      API.sendChat('Soon™...');
+                    }
                   break;
                   case 'lame' :
                     if ($('#button-vote-negative').length != 0) {
