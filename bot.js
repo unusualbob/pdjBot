@@ -190,6 +190,7 @@ phantom.create(function(ph) {
                     API.sendChat('There are ' + API.getUsers().length + ' users.');
                     break;
                   case 'remaeus' :
+                  case 'remæus':
                     API.sendChat("Hey @remæus close a few tabs so your chrome doesn't crash");
                     break;
                   case 'nsfw':
