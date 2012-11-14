@@ -1,5 +1,6 @@
 var phantom = require('phantom');
 var config = require('./config');
+var smiffJSON = require('./smiff.json');
 
 phantom.create(function(ph) {
   console.log('start');
@@ -18,7 +19,7 @@ phantom.create(function(ph) {
       if ('success' === status)
       {
         //This function is a bitch, it doesn't like variables from outside AT ALL. To hack this add the variable here and at the bottom.
-        evaluate(page, function(config){
+        evaluate(page, function(config, smiffJSON){
         
           var url = window.location.href;
            
@@ -68,10 +69,30 @@ phantom.create(function(ph) {
               window.djData = [];
               console.log("-|-|-|-|-Bot Ready-|-|-|-|-");
               
+              Playback.streamDisabled=true;
+              Playback.stop();
+              
+              RoomUser.audience.gridData.avatarCap=1;
+              RoomUser.redraw();
+              DB.settings.avatarcap=1;
+              DB.saveSettings();
+              
+              animSpeed = 5000;
+              
               /**Event listeners**/
               API.addEventListener(API.CHAT, function(data){
                 if (data.message.substr(0,1) === "/"){
                   command(data);
+                } else {
+                  
+                  var tokens = data.message.split(" ");
+                  tokens.forEach(function(token) {
+                    if (token.substr(0, 1) === '!') {
+                      data.message = '/'+token.substr(1);
+                      command(data);
+                    }
+                  });
+                
                 }
                 
                 if (data.message === "smiff, upvote" && data.fromID == "14028765") {
@@ -144,16 +165,18 @@ phantom.create(function(ph) {
                 
               });
               
-              API.addEventListener(API.DJ_ADVANCE, function(djs) {
-                if ($('#button-vote-positive').length != 0) {
-                  setTimeout(function(){
-                    $('#button-vote-positive').click();
-                  },761);
-                } else {
-                  console.log("couldn't find upvote");
-                }
+              //This is autovote, it was requested that I remove this so /awesome was more awesome
+              
+              // API.addEventListener(API.DJ_ADVANCE, function(djs) {
+                // if ($('#button-vote-positive').length != 0) {
+                  // setTimeout(function(){
+                    // $('#button-vote-positive').click();
+                  // },761);
+                // } else {
+                  // console.log("couldn't find upvote");
+                // }
                 
-              });
+              // });
               
               
               
@@ -167,17 +190,25 @@ phantom.create(function(ph) {
                 {
                   case 'about':
                   case 'commands':
-                    API.sendChat("http://github.com/unusualbob/pdjBot");
+                    socket.emit('chat',"http://github.com/unusualbob/pdjBot");
                     break;
+                  case 'cb':
+                    //var djs = API.getDJs();
+                    API.sendChat('If I were a moderator, I\'d remove you at the end of this song.  I\'m not, so I can\'t, and thus won\'t.');
+                  break;
                   case 'idle':
                   case 'djs':
                     getIdleDjs();
                     break;
+                  case 'pjs':
+                    API.sendChat('Time for bed already?');
+                  case 'bjs':
+                    API.sendChat('Sorry bjs are not yet supported, and even if they were would you really want an internet bj?');
                   case 'bitch':
                     API.sendChat('Not a lot of things are against the rules, but bitching about the music is. Stop being a bitch.');
                     break;
                   case 'rules':
-                    API.sendChat('No song limits, no queues, no auto-dj. Pure FFA. DJ\'s over 10 minutes idle (measured by chat) face the [boot]. See /music for music suggestions, though there are no defined or enforced rules on music. More: http://goo.gl/b7UGO');
+                    socket.emit('chat','No song limits, no queues, no auto-dj. Pure FFA. DJ\'s over 10 minutes idle (measured by chat) face the [boot]. See /music for music suggestions, though there are no defined or enforced rules on music. More: http://goo.gl/b7UGO');
                     break;
                   case 'afk':
                     API.sendChat('If you\'re AFK at the end of your song for longer than 30 minutes you get warning 1. One minute later you get warning 2, another minute last warning, 30 seconds [boot].');
@@ -223,6 +254,36 @@ phantom.create(function(ph) {
                       console.log("couldn't find downvote");
                     }
                     break;
+                  case 'catfacts':
+                    $.getJSON('http://www.corsproxy.com/catfacts-api.appspot.com/api/facts', function(data) {
+                      if (data.facts && data.facts.length > 0) {
+                        API.sendChat(data.facts[0]);
+                      }
+                    });
+                  break;
+                  case 'smiffacts':
+                  case 'smiffax':
+                  case 'smifffax':
+                  case 'smifffacts':
+                    if (smiffJSON.facts) {
+                      var len = smiffJSON.facts.length;
+                      if (len > 0) {
+                        var pick = Math.floor(Math.random()*len);
+                          if (smiffJSON.facts[pick].length < 251) {
+                            API.sendChat(smiffJSON.facts[pick]);
+                          } else {
+                            API.sendChat(smiffJSON.facts[pick]);
+                            setTimeout(function() {
+                              API.sendChat(smiffJSON.facts[pick].substr(250));
+                            }, 5001);
+                          }
+                      } else {
+                        console.log('no length');
+                      }
+                    } else {
+                      console.log('no facts :/');
+                    }
+                  break;
                   case 'awesome' :
                     if ($('#button-vote-positive').length != 0) {
                       $('#button-vote-positive').click();
@@ -234,6 +295,9 @@ phantom.create(function(ph) {
                   case 'mods' :
                   case 'moderators' :
                     callMods(data);
+                    break;
+                  case 'erm' :
+                    API.sendChat(ermgerd(cmd.substr(4)));
                 }
               }
               
@@ -330,13 +394,142 @@ phantom.create(function(ph) {
                   }
                 }
               }
+              
+              function ermgerd(text) {
+                text = text.toUpperCase();
+
+                var words = text.split(' '),
+                  translatedWords = [];
+
+                for (var j in words) {
+                  var prefix = words[j].match(/^\W+/) || '',
+                    suffix = words[j].match(/\W+$/) || '',
+                    word = words[j].replace(prefix, '').replace(suffix, '');
+
+                  if (word) {
+                    // Is translatable
+                    translatedWords.push(prefix + translate(word) + suffix);
+                  } else {
+                    // Is punctuation
+                    translatedWords.push(words[j]);
+                  }
+                }
+
+                return translatedWords.join(' ');
+              }
+              
+              function str_split(string, split_length) {
+                // http://kevin.vanzonneveld.net
+                // +     original by: Martijn Wieringa
+                // +     improved by: Brett Zamir (http://brett-zamir.me)
+                // +     bugfixed by: Onno Marsman
+                // +      revised by: Theriault
+                // +        input by: Bjorn Roesbeke (http://www.bjornroesbeke.be/)
+                // +      revised by: Rafał Kukawski (http://blog.kukawski.pl/)
+                // *       example 1: str_split('Hello Friend', 3);
+                // *       returns 1: ['Hel', 'lo ', 'Fri', 'end']
+                if (split_length === null) {
+                  split_length = 1;
+                }
+                if (string === null || split_length < 1) {
+                  return false;
+                }
+                string += '';
+                var chunks = [],
+                  pos = 0,
+                  len = string.length;
+                while (pos < len) {
+                  chunks.push(string.slice(pos, pos += split_length));
+                }
+
+                return chunks;
+              };
+
+              function translate(word) {
+                // Don't translate short words
+                if (word.length == 1) {
+                  return word;
+                }
+
+                // Handle specific words
+                switch (word) {
+                  case 'AWESOME':      return 'ERSUM';
+                  case 'BANANA':      return 'BERNERNER';
+                  case 'BAYOU':      return 'BERU';
+                  case 'FAVORITE':
+                  case 'FAVOURITE':    return 'FRAVRIT';
+                  case 'GOOSEBUMPS':    return 'GERSBERMS';
+                  case 'LONG':      return 'LERNG';
+                  case 'MY':        return 'MAH';
+                  case 'THE':        return 'DA';
+                  case 'THEY':      return 'DEY';
+                  case 'WE\'RE':      return 'WER';
+                  case 'YOU':        return 'U';
+                  case 'YOU\'RE':      return 'YER';
+                }
+
+                // Before translating, keep a reference of the original word
+                var originalWord = word;
+
+                // Drop vowel from end of words
+                if (originalWord.length > 2) {  // Keep it for short words, like "WE"
+                  word = word.replace(/[AEIOU]$/, '');
+                }
+
+                // Reduce duplicate letters
+                word = word.replace(/[^\w\s]|(.)(?=\1)/gi, '');
+
+                // Reduce adjacent vowels to one
+                word = word.replace(/[AEIOUY]{2,}/g, 'E');  // TODO: Keep Y as first letter
+
+                // DOWN -> DERN
+                word = word.replace(/OW/g, 'ER');
+
+                // PANCAKES -> PERNKERKS
+                word = word.replace(/AKES/g, 'ERKS');
+
+                // The meat and potatoes: replace vowels with ER
+                word = word.replace(/[AEIOUY]/g, 'ER');    // TODO: Keep Y as first letter
+
+                // OH -> ER
+                word = word.replace(/ERH/g, 'ER');
+
+                // MY -> MAH
+                word = word.replace(/MER/g, 'MAH');
+
+                // FALLING -> FALERNG -> FERLIN
+                word = word.replace('ERNG', 'IN');
+
+                // POOPED -> PERPERD -> PERPED
+                word = word.replace('ERPERD', 'ERPED');
+
+                // MEME -> MAHM -> MERM
+                word = word.replace('MAHM', 'MERM');
+
+                // Keep Y as first character
+                // YES -> ERS -> YERS
+                if (originalWord.charAt(0) == 'Y') {
+                  word = 'Y' + word;
+                }
+
+                // Reduce duplicate letters
+                word = word.replace(/[^\w\s]|(.)(?=\1)/gi, '');
+
+                // YELLOW -> YERLER -> YERLO
+                if ((originalWord.substr(-3) == 'LOW') && (word.substr(-3) == 'LER')) {
+                  word = word.substr(0, word.length - 3) + 'LO';
+                }
+
+                return word;
+              };
+              
             }
           }
           else
           {
             console.log("Unknown url: " + url);
           }
-        }, config);
+        }, config, smiffJSON);
       }
       else
       {
@@ -364,3 +557,7 @@ phantom.create(function(ph) {
   });
 
 });
+
+function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
