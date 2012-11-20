@@ -256,6 +256,9 @@ phantom.create(function(ph) {
                     // TODO: only allow mods to trigger smiffhour
                     if ( (now - timers.smiffHour) > (config.intervals.smiffHour * 1000) ) {
                       API.sendChat('Smiff Hour unlocked!  For the next several songs, we are going to play a selection of Will Smith songs. origin: Smiff Hour is a time honored tradition dating back to the beginning of the Coding Soundtrack. It is unknown who played the first Willard Smith.');
+                      setTimeout(function() {
+                        API.sendChat('The hour of the SMIFF has now passed.');
+                      }, 3600000); // 3600 seconds = 1 hour
                     } else {
                       API.sendChat('Soon™...');
                     }
