@@ -233,6 +233,13 @@ phantom.create(function(ph) {
                   case 'video':
                     API.sendChat('dat video.');
                   break;
+                  case 'votekick':
+                    if (typeof(tokens[1]) != 'undefined' && tokens[1].length > 0) {
+                      API.sendChat('Who do you want to votekick?  I need a name.');
+                    } else {
+                      API.sendChat('I am not a moderator of this room, so I cannot accept your vote to kick ' + tokens[1] + '.  Sorry.');
+                    }
+                  break;
                   case 'smiff' :
                     if (tokens[1] == 'upvote'){
                       if ($('#button-vote-positive').length != 0) {
