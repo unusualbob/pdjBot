@@ -2,6 +2,13 @@ var phantom = require('phantom');
 var config = require('./config');
 var smiffJSON = require('./smiff.json');
 
+config.intervals = {
+  smiffHour: '28800' // 8 hours
+};
+
+var bootTime = new Date()
+  , timers = { smiffHour: bootTime.setHours( bootTime.getHours() - (config.intervals.smiffHour / 3600) ) };
+
 phantom.create(function(ph) {
   console.log('start');
   
@@ -192,6 +199,8 @@ phantom.create(function(ph) {
               function command(data) {
                 var cmd = data.message;
                 var tokens = cmd.substr(1, cmd.length).split(" ");
+                var now = new Date();
+                
                 console.log("Command " + tokens[0]);
                 
                 switch (tokens[0])
@@ -232,6 +241,7 @@ phantom.create(function(ph) {
                     API.sendChat('There are ' + API.getUsers().length + ' users.');
                     break;
                   case 'remaeus' :
+                  case 'remæus':
                     API.sendChat("Hey @remæus close a few tabs so your chrome doesn't crash");
                     break;
                   case 'nsfw':
@@ -242,6 +252,13 @@ phantom.create(function(ph) {
                     break;
                   case 'video':
                     API.sendChat('dat video.');
+                  break;
+                  case 'votekick':
+                    if (typeof(tokens[1]) != 'undefined' && tokens[1].length > 0) {
+                      API.sendChat('Who do you want to votekick?  I need a name.');
+                    } else {
+                      API.sendChat('I am not a moderator of this room, so I cannot accept your vote to kick ' + tokens[1] + '.  Sorry.');
+                    }
                   break;
                   case 'smiff' :
                     if (tokens[1] == 'upvote'){
@@ -254,7 +271,15 @@ phantom.create(function(ph) {
                     }
                     break;
                   case 'smiffhour':
-                    API.sendChat('For the next several songs, We are going to play a selection of Will Smith songs. origin: Smiff Hour is a time honored tradition dating back to the beginning of the Coding Soundtrack. It is unknown who played the first Willard Smith.');
+                    // TODO: only allow mods to trigger smiffhour
+                    if ( (now - timers.smiffHour) > (config.intervals.smiffHour * 1000) ) {
+                      API.sendChat('Smiff Hour unlocked!  For the next several songs, we are going to play a selection of Will Smith songs. origin: Smiff Hour is a time honored tradition dating back to the beginning of the Coding Soundtrack. It is unknown who played the first Willard Smith.');
+                      setTimeout(function() {
+                        API.sendChat('The hour of the SMIFF has now passed.');
+                      }, 3600000); // 3600 seconds = 1 hour
+                    } else {
+                      API.sendChat('Soon™...');
+                    }
                   break;
                   case 'lame' :
                     if ($('#button-vote-negative').length != 0) {
