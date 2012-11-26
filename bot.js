@@ -22,18 +22,26 @@ phantom.create(function(ph) {
         evaluate(page, function(config, smiffJSON){
         
           var url = window.location.href;
-           
-          if (url === 'http://www.plug.dj/')
+          // console.log(url);
+          if (url === 'http://www.plug.dj/' || url === 'http://plug.dj/')
           {
-            if (0 != $('#twitter').length)
+            var twitter = [];
+            //This is to fix a weird undefined exception I was getting from jquery
+            try {
+              twitter = $('#twitter');
+            } catch (e) {
+              console.log('undefined');
+            }
+            //
+            if (twitter.length != 0)
             {
               console.log("Redirect to twitter oauth");
-              $('#twitter').click();
+              twitter.click();
             }
             else
             {
               console.log('Successfully logged in, redirect to coding-soundtrack');
-              window.location.href = 'http://www.plug.dj/coding-soundtrack/';
+              window.location.href = 'http://plug.dj/coding-soundtrack/';
             }
           }
           else if (url.substring(0,43) === 'https://api.twitter.com/oauth/authenticate?')
@@ -59,9 +67,9 @@ phantom.create(function(ph) {
               }
             }
           }
-          else if (url === 'http://www.plug.dj/coding-soundtrack/')
+          else if (url === 'http://plug.dj/coding-soundtrack/')
           {
-          
+            // console.log('yay soundtrack');
             //INITIALIZE BOT HERE, We check our variable first to make sure we dont init multiple times
             if (!window.jarplug)
             {
@@ -192,6 +200,9 @@ phantom.create(function(ph) {
                   case 'commands':
                     socket.emit('chat',"http://github.com/unusualbob/pdjBot");
                     break;
+                  case 'jarplug':
+                  case 'plugin':
+                    socket.emit('chat',"http://github.com/chrisinajar/jarPlug");
                   case 'cb':
                     //var djs = API.getDJs();
                     API.sendChat('If I were a moderator, I\'d remove you at the end of this song.  I\'m not, so I can\'t, and thus won\'t.');
